@@ -1,16 +1,3 @@
-# el_pregonero_comercios
+# El Pregonero Comercios
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+El Pregonero es una implementación de un sistema de marketing de proximidad para lo cual hace uso de balizas BLE. La aplicación El Pregonero Comercios es uno de los tres elementos que forman parte del sistema. Esta aplicación es la herramienta que los encargados de los establecimientos comerciales usan para publicar la oferta de sus prodcutos y promociones.
