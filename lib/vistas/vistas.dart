@@ -1,0 +1,9 @@
+export 'promocion_vacia_vista.dart';
+export 'promocion_item_vista.dart';
+export 'promocion_lista_vista.dart';
+export 'promocion_vista.dart';
+export 'inicio.dart';
+export 'login_vista.dart';
+export 'onboarding_vista.dart';
+export 'perfil_vista.dart';
+export 'splash_vista.dart';
