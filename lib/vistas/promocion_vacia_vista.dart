@@ -17,7 +17,7 @@ class PromocionVaciaVista extends StatelessWidget {
             Flexible(
               child: AspectRatio(
                 aspectRatio: 1 / 1,
-                child: Image.asset('assets/fooderlich_assets/empty_list.png'),
+                child: Image.asset('assets/el_pregonero_assets/empty_list.png'),
               ),
             ),
             const Text(

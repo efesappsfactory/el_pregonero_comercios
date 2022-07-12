@@ -36,7 +36,7 @@ class LoginVista extends StatelessWidget {
               const SizedBox(
                 height: 200,
                 child: Image(
-                  image: AssetImage('assets/fooderlich_assets/rw_logo.png'),
+                  image: AssetImage('assets/el_pregonero_assets/rw_logo.png'),
                 ),
               ),
               const SizedBox(height: 16),

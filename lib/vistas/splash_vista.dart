@@ -34,7 +34,7 @@ class _SplashVistaState extends State<SplashVista> {
           children: [
             const Image(
               height: 200,
-              image: AssetImage('assets/fooderlich_assets/rw_logo.png'),
+              image: AssetImage('assets/el_pregonero_assets/rw_logo.png'),
             ),
             const Text('Initializing...')
           ],
