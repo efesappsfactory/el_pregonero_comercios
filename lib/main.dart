@@ -1,12 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'el_pregonero_tema.dart';
 import 'modelos/modelos.dart';
 import 'navegacion/app_route_parser.dart';
 import 'navegacion/app_router.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(
     const ElPregoneroComercios(),
   );
@@ -20,9 +22,10 @@ class ElPregoneroComercios extends StatefulWidget {
 }
 
 class _ElPregoneroComerciosState extends State<ElPregoneroComercios> {
-  final _groceryManager = PromocionManager();
-  final _profileManager = PerfilManager();
+  final _promocionManager = PromocionManager();
+  final _perfilManager = PerfilManager();
   final _appStateManager = AppStateManager();
+  final _usuarioDao = UsuarioDao();
   late AppRouter _appRouter;
   final routeParser = AppRouteParser();
 
@@ -30,8 +33,8 @@ class _ElPregoneroComerciosState extends State<ElPregoneroComercios> {
   void initState() {
     _appRouter = AppRouter(
       appStateManager: _appStateManager,
-      promocionManager: _groceryManager,
-      profileManager: _profileManager,
+      promocionManager: _promocionManager,
+      perfilManager: _perfilManager,
     );
     super.initState();
   }
@@ -40,12 +43,16 @@ class _ElPregoneroComerciosState extends State<ElPregoneroComercios> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => _groceryManager),
+        ChangeNotifierProvider(create: (context) => _promocionManager),
         ChangeNotifierProvider(
           create: (context) => _appStateManager,
         ),
         ChangeNotifierProvider(
-          create: (context) => _profileManager,
+          create: (context) => _perfilManager,
+        ),
+        Provider(
+          create: (context) => _usuarioDao,
+          lazy: false,
         )
       ],
       child: Consumer<PerfilManager>(
