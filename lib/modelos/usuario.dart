@@ -1,4 +1,4 @@
-class User {
+class Usuario {
   final String firstName;
   final String lastName;
   final String role;
@@ -6,7 +6,7 @@ class User {
   final int points;
   final bool darkMode;
 
-  User({
+  Usuario({
     required this.firstName,
     required this.lastName,
     required this.role,
