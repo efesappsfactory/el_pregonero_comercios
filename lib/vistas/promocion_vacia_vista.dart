@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../modelos/modelos.dart';
 
 class PromocionVaciaVista extends StatelessWidget {
@@ -17,32 +16,21 @@ class PromocionVaciaVista extends StatelessWidget {
             Flexible(
               child: AspectRatio(
                 aspectRatio: 1 / 1,
-                child: Image.asset('assets/el_pregonero_assets/empty_list.png'),
+                child:
+                    Image.asset('assets/el_pregonero_assets/lista_vacia.png'),
               ),
             ),
             const Text(
-              'No Groceries',
+              'Agregue Promociones',
               style: TextStyle(fontSize: 21.0),
             ),
             const SizedBox(height: 16.0),
             const Text(
-              'Shopping for ingredients?\n'
-              'Tap the + button to write them down!',
+              'Para agragar promociones a la lista\n'
+              'Toque el botón + para registrarlas',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16.0),
-            MaterialButton(
-              textColor: Colors.white,
-              child: const Text('Browse Recipes'),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-              color: Colors.green,
-              onPressed: () {
-                Provider.of<AppStateManager>(context, listen: false)
-                    .goToRecipes();
-              },
-            ),
           ],
         ),
       ),
