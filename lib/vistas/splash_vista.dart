@@ -34,9 +34,11 @@ class _SplashVistaState extends State<SplashVista> {
           children: [
             const Image(
               height: 200,
-              image: AssetImage('assets/el_pregonero_assets/rw_logo.png'),
+              image: AssetImage(
+                  'assets/el_pregonero_assets/el_pregonero_logo_sin_nombre.png'),
             ),
-            const Text('Initializing...')
+            const SizedBox(height: 30),
+            const Text('Un momento por favor...')
           ],
         ),
       ),
