@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../modelos/modelos.dart';
 import '../vistas/vistas.dart';
 import 'app_link.dart';
@@ -11,23 +10,23 @@ class AppRouter extends RouterDelegate<AppLink>
 
   final AppStateManager appStateManager;
   final PromocionManager promocionManager;
-  final PerfilManager profileManager;
+  final PerfilManager perfilManager;
 
   AppRouter({
     required this.appStateManager,
     required this.promocionManager,
-    required this.profileManager,
+    required this.perfilManager,
   }) : navigatorKey = GlobalKey<NavigatorState>() {
     appStateManager.addListener(notifyListeners);
     promocionManager.addListener(notifyListeners);
-    profileManager.addListener(notifyListeners);
+    perfilManager.addListener(notifyListeners);
   }
 
   @override
   void dispose() {
     appStateManager.removeListener(notifyListeners);
     promocionManager.removeListener(notifyListeners);
-    profileManager.removeListener(notifyListeners);
+    perfilManager.removeListener(notifyListeners);
     super.dispose();
   }
 
@@ -44,7 +43,7 @@ class AppRouter extends RouterDelegate<AppLink>
         ] else if (!appStateManager.isOnboardingComplete) ...[
           OnboardingVista.page(),
         ] else ...[
-          Inicio.page(appStateManager.getSelectedTab),
+          Inicio.page(),
           if (promocionManager.isCreatingNewItem)
             PromocionItemVista.page(onCreate: (item) {
               promocionManager.addItem(item);
@@ -61,8 +60,8 @@ class AppRouter extends RouterDelegate<AppLink>
                 onUpdate: (item, index) {
                   promocionManager.updateItem(item, index);
                 }),
-          if (profileManager.didSelectUser)
-            PerfilVista.page(profileManager.getUser),
+          if (perfilManager.didSelectUser)
+            PerfilVista.page(perfilManager.getUser),
         ]
       ],
     );
@@ -82,11 +81,11 @@ class AppRouter extends RouterDelegate<AppLink>
     }
 
     if (route.settings.name == ElPregoneroPaginas.profilePath) {
-      profileManager.tapOnProfile(false);
+      perfilManager.tapOnProfile(false);
     }
 
     if (route.settings.name == ElPregoneroPaginas.raywenderlich) {
-      profileManager.tapOnRaywenderlich(false);
+      perfilManager.tapOnRaywenderlich(false);
     }
 
     return true;
@@ -100,7 +99,7 @@ class AppRouter extends RouterDelegate<AppLink>
     } else if (!appStateManager.isOnboardingComplete) {
       return AppLink(location: AppLink.kOnboardingPath);
       // 3
-    } else if (profileManager.didSelectUser) {
+    } else if (perfilManager.didSelectUser) {
       return AppLink(location: AppLink.kProfilePath);
       // 4
     } else if (promocionManager.isCreatingNewItem) {
@@ -111,9 +110,7 @@ class AppRouter extends RouterDelegate<AppLink>
       return AppLink(location: AppLink.kItemPath, itemId: id);
       // 6
     } else {
-      return AppLink(
-          location: AppLink.kHomePath,
-          currentTab: appStateManager.getSelectedTab);
+      return AppLink(location: AppLink.kHomePath);
     }
   }
 
@@ -127,7 +124,7 @@ class AppRouter extends RouterDelegate<AppLink>
     switch (newLink.location) {
       // 3
       case AppLink.kProfilePath:
-        profileManager.tapOnProfile(true);
+        perfilManager.tapOnProfile(true);
         break;
       // 4
       case AppLink.kItemPath:
@@ -140,14 +137,11 @@ class AppRouter extends RouterDelegate<AppLink>
           promocionManager.createNewItem();
         }
         // 7
-        profileManager.tapOnProfile(false);
+        perfilManager.tapOnProfile(false);
         break;
       // 8
       case AppLink.kHomePath:
-        // 9
-        appStateManager.goToTab(newLink.currentTab ?? 0);
-        // 10
-        profileManager.tapOnProfile(false);
+        perfilManager.tapOnProfile(false);
         promocionManager.groceryItemTapped(-1);
         break;
       // 11

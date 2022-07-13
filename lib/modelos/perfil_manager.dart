@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'modelos.dart';
 
 class PerfilManager extends ChangeNotifier {
-  User get getUser => User(
+  Usuario get getUser => Usuario(
         firstName: 'Stef',
         lastName: 'Patt',
         role: 'Flutterista',

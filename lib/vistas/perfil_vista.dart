@@ -5,7 +5,7 @@ import '../componentes/circle_image.dart';
 import '../modelos/modelos.dart';
 
 class PerfilVista extends StatefulWidget {
-  static MaterialPage page(User user) {
+  static MaterialPage page(Usuario user) {
     return MaterialPage(
       name: ElPregoneroPaginas.profilePath,
       key: ValueKey(ElPregoneroPaginas.profilePath),
@@ -13,7 +13,7 @@ class PerfilVista extends StatefulWidget {
     );
   }
 
-  final User user;
+  final Usuario user;
   const PerfilVista({
     Key? key,
     required this.user,
