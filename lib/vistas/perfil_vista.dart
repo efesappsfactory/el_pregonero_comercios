@@ -9,14 +9,14 @@ class PerfilVista extends StatefulWidget {
     return MaterialPage(
       name: ElPregoneroPaginas.profilePath,
       key: ValueKey(ElPregoneroPaginas.profilePath),
-      child: PerfilVista(user: user),
+      child: PerfilVista(usuario: user),
     );
   }
 
-  final Usuario user;
+  final Usuario usuario;
   const PerfilVista({
     Key? key,
-    required this.user,
+    required this.usuario,
   }) : super(key: key);
 
   @override
@@ -77,7 +77,7 @@ class _PerfilVistaState extends State<PerfilVista> {
         children: [
           const Text('Dark Mode'),
           Switch(
-            value: widget.user.darkMode,
+            value: widget.usuario.darkMode,
             onChanged: (value) {
               Provider.of<PerfilManager>(context, listen: false).darkMode =
                   value;
@@ -92,17 +92,17 @@ class _PerfilVistaState extends State<PerfilVista> {
     return Column(
       children: [
         CircleImage(
-          imageProvider: AssetImage(widget.user.profileImageUrl),
+          imageProvider: AssetImage(widget.usuario.profileImageUrl),
           imageRadius: 60.0,
         ),
         const SizedBox(height: 16.0),
         Text(
-          widget.user.firstName,
+          widget.usuario.firstName,
           style: const TextStyle(fontSize: 21),
         ),
-        Text(widget.user.role),
+        Text(widget.usuario.role),
         Text(
-          '${widget.user.points} points',
+          '${widget.usuario.points} points',
           style: const TextStyle(
             fontSize: 30,
             color: Colors.green,

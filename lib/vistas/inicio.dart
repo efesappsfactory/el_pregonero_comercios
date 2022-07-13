@@ -1,36 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../modelos/modelos.dart';
 import 'promocion_vista.dart';
 
 class Inicio extends StatefulWidget {
-  static MaterialPage page(int currentTab) {
+  static MaterialPage page() {
     return MaterialPage(
       name: ElPregoneroPaginas.inicio,
       key: ValueKey(ElPregoneroPaginas.inicio),
-      child: Inicio(
-        currentTab: currentTab,
-      ),
+      child: Inicio(),
     );
   }
 
   const Inicio({
     Key? key,
-    required this.currentTab,
   }) : super(key: key);
-
-  final int currentTab;
 
   @override
   _InicioState createState() => _InicioState();
 }
 
 class _InicioState extends State<Inicio> {
-  static List<Widget> pages = <Widget>[
-    const PromocionVista(),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Consumer<AppStateManager>(
@@ -49,10 +39,7 @@ class _InicioState extends State<Inicio> {
               profileButton(),
             ],
           ),
-          body: IndexedStack(
-            index: widget.currentTab,
-            children: pages,
-          ),
+          body: const PromocionVista(),
         );
       },
     );
