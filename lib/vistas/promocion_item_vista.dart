@@ -1,10 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+import 'package:image_picker/image_picker.dart';
 
-import '../componentes/promocion_tile.dart';
 import '../modelos/modelos.dart';
 
 class PromocionItemVista extends StatefulWidget {
@@ -21,8 +24,8 @@ class PromocionItemVista extends StatefulWidget {
     required Function(PromocionItem, int) onUpdate,
   }) {
     return MaterialPage(
-      name: ElPregoneroPaginas.groceryItemDetails,
-      key: ValueKey(ElPregoneroPaginas.groceryItemDetails),
+      name: ElPregoneroPaginas.promocionItemDetalles,
+      key: ValueKey(ElPregoneroPaginas.promocionItemDetalles),
       child: PromocionItemVista(
         originalItem: item,
         index: index,
@@ -46,8 +49,12 @@ class PromocionItemVista extends StatefulWidget {
 }
 
 class _PromocionItemVistaState extends State<PromocionItemVista> {
-  final _nameController = TextEditingController();
-  String _name = '';
+  final ImagePicker _picker = ImagePicker();
+  File? _imagen;
+  final _descripcionController = TextEditingController();
+  final _pvpController = TextEditingController();
+  final _descuentoController = TextEditingController();
+
   Importance _importance = Importance.low;
   DateTime _dueDate = DateTime.now();
   TimeOfDay _timeOfDay = TimeOfDay.now();
@@ -62,9 +69,9 @@ class _PromocionItemVistaState extends State<PromocionItemVista> {
           IconButton(
             icon: const Icon(Icons.check),
             onPressed: () {
-              final groceryItem = PromocionItem(
+              final promocionItem = PromocionItem(
                 id: widget.originalItem?.id ?? const Uuid().v1(),
-                name: _nameController.text,
+                name: _descripcionController.text,
                 importance: _importance,
                 color: _currentColor,
                 quantity: _currentSliderValue,
@@ -78,16 +85,16 @@ class _PromocionItemVistaState extends State<PromocionItemVista> {
               );
 
               if (widget.isUpdating) {
-                widget.onUpdate(groceryItem, widget.index);
+                widget.onUpdate(promocionItem, widget.index);
               } else {
-                widget.onCreate(groceryItem);
+                widget.onCreate(promocionItem);
               }
             },
           )
         ],
         elevation: 0.0,
         title: Text(
-          'Grocery Item',
+          'Detalles de la Promoción',
           style: GoogleFonts.lato(fontWeight: FontWeight.w600),
         ),
       ),
@@ -95,50 +102,121 @@ class _PromocionItemVistaState extends State<PromocionItemVista> {
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            buildNameField(),
-            buildImportanceField(),
-            buildDateField(context),
-            buildTimeField(context),
-            const SizedBox(height: 10.0),
-            buildColorPicker(context),
-            const SizedBox(height: 10.0),
-            buildQuantityField(),
-            const SizedBox(height: 16.0),
-            PromocionTile(
-              item: PromocionItem(
-                id: 'previewMode',
-                name: _name,
-                importance: _importance,
-                color: _currentColor,
-                quantity: _currentSliderValue,
-                date: DateTime(
-                  _dueDate.year,
-                  _dueDate.month,
-                  _dueDate.day,
-                  _timeOfDay.hour,
-                  _timeOfDay.minute,
-                ),
-              ),
-            ),
+            buildImagePicker(),
+            const SizedBox(height: 20.0),
+            buildCampoDescripcion(),
+            buildCampoPVP(),
+            buildCampoDescuento(),
+            buildCampoVigenciaPromocion(context),
+            const SizedBox(height: 20.0),
+            buildEtiquetaColor(context),
+            const SizedBox(height: 20.0),
           ],
         ),
       ),
     );
   }
 
-  Widget buildNameField() {
+  void imagePickerHelper({ImageSource source = ImageSource.gallery}) async {
+    try {
+      XFile? imagen = await _picker.pickImage(
+        source: source,
+        imageQuality: 50,
+        preferredCameraDevice: CameraDevice.rear,
+      );
+      setState(() {
+        _imagen = File(imagen!.path);
+        Navigator.of(context).pop();
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Widget buildImagePicker() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Item Name',
+          'Imagen',
+          style: GoogleFonts.lato(fontSize: 28.0),
+        ),
+        const SizedBox(height: 10.0),
+        Center(
+          child: Column(
+            children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Fuente de la imagen'),
+                        scrollable: true,
+                        content: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            TextButton(
+                                child: const Text('Tomar una foto'),
+                                onPressed: () => imagePickerHelper(
+                                    source: ImageSource.camera)),
+                            TextButton(
+                                child: const Text('Elegir de la galería'),
+                                onPressed: () => imagePickerHelper(
+                                    source: ImageSource.gallery)),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: Container(
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: _imagen != null ? Colors.transparent : Colors.indigo,
+                  ),
+                  child: _imagen != null
+                      ? Image.file(
+                          _imagen!,
+                          width: 200.0,
+                          height: 200.0,
+                          fit: BoxFit.fitHeight,
+                        )
+                      : const Icon(
+                          Icons.camera_alt_outlined,
+                          color: Colors.orange,
+                          size: 50,
+                        ),
+                ),
+              ),
+              Text(
+                'Adhiere una imagen',
+                style: GoogleFonts.lato(fontSize: 18),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildCampoDescripcion() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Descripción',
           style: GoogleFonts.lato(fontSize: 28.0),
         ),
         TextField(
-          controller: _nameController,
+          maxLength: 150,
+          maxLines: 3,
+          minLines: 1,
+          controller: _descripcionController,
           cursorColor: _currentColor,
           decoration: InputDecoration(
-            hintText: 'E.g. Apples, Banana, 1 Bag of salt',
+            hintText: 'De una descripción de la promoción.',
             enabledBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.white),
             ),
@@ -154,57 +232,71 @@ class _PromocionItemVistaState extends State<PromocionItemVista> {
     );
   }
 
-  Widget buildImportanceField() {
+  Widget buildCampoPVP() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Importance',
+          'Precio de Venta',
           style: GoogleFonts.lato(fontSize: 28.0),
         ),
-        Wrap(
-          spacing: 10.0,
-          children: [
-            ChoiceChip(
-              selectedColor: Colors.black,
-              selected: _importance == Importance.low,
-              label: const Text(
-                'low',
-                style: TextStyle(color: Colors.white),
-              ),
-              onSelected: (selected) {
-                setState(() => _importance = Importance.low);
-              },
-            ),
-            ChoiceChip(
-              selectedColor: Colors.black,
-              selected: _importance == Importance.medium,
-              label: const Text(
-                'medium',
-                style: TextStyle(color: Colors.white),
-              ),
-              onSelected: (selected) {
-                setState(() => _importance = Importance.medium);
-              },
-            ),
-            ChoiceChip(
-              selectedColor: Colors.black,
-              selected: _importance == Importance.high,
-              label: const Text(
-                'high',
-                style: TextStyle(color: Colors.white),
-              ),
-              onSelected: (selected) {
-                setState(() => _importance = Importance.high);
-              },
-            ),
+        TextField(
+          keyboardType: TextInputType.number,
+          controller: _pvpController,
+          cursorColor: _currentColor,
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.digitsOnly
           ],
+          decoration: InputDecoration(
+            //hintText: '9.99',
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: _currentColor),
+            ),
+            border: UnderlineInputBorder(
+              borderSide: BorderSide(color: _currentColor),
+            ),
+          ),
         ),
       ],
     );
   }
 
-  Widget buildDateField(BuildContext context) {
+  Widget buildCampoDescuento() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Porcentaje de Descuento',
+          style: GoogleFonts.lato(fontSize: 28.0),
+        ),
+        TextField(
+          keyboardType: TextInputType.number,
+          controller: _descuentoController,
+          cursorColor: _currentColor,
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.digitsOnly
+          ],
+          decoration: InputDecoration(
+            //hintText: '25',
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: _currentColor),
+            ),
+            border: UnderlineInputBorder(
+              borderSide: BorderSide(color: _currentColor),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildCampoVigenciaPromocion(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -212,68 +304,35 @@ class _PromocionItemVistaState extends State<PromocionItemVista> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Date',
+              'Vigencia',
               style: GoogleFonts.lato(fontSize: 28.0),
             ),
             TextButton(
-              child: const Text('Select'),
+              child: const Text('Seleccionar'),
               onPressed: () async {
-                final currentDate = DateTime.now();
-                final selectedDate = await showDatePicker(
+                final fechaActual = DateTime.now();
+                final fechaSeleccionada = await showDatePicker(
                   context: context,
-                  initialDate: currentDate,
-                  firstDate: currentDate,
-                  lastDate: DateTime(currentDate.year + 5),
+                  initialDate: fechaActual,
+                  firstDate: fechaActual,
+                  lastDate: DateTime(fechaActual.year + 1),
                 );
 
                 setState(() {
-                  if (selectedDate != null) {
-                    _dueDate = selectedDate;
+                  if (fechaSeleccionada != null) {
+                    _dueDate = fechaSeleccionada;
                   }
                 });
               },
             ),
           ],
         ),
-        Text('${DateFormat('yyyy-MM-dd').format(_dueDate)}'),
+        Text(DateFormat('yyyy-MM-dd').format(_dueDate)),
       ],
     );
   }
 
-  Widget buildTimeField(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Time of Day',
-              style: GoogleFonts.lato(fontSize: 28.0),
-            ),
-            TextButton(
-              child: const Text('Select'),
-              onPressed: () async {
-                final timeOfDay = await showTimePicker(
-                  initialTime: TimeOfDay.now(),
-                  context: context,
-                );
-
-                setState(() {
-                  if (timeOfDay != null) {
-                    _timeOfDay = timeOfDay;
-                  }
-                });
-              },
-            ),
-          ],
-        ),
-        Text('${_timeOfDay.format(context)}'),
-      ],
-    );
-  }
-
-  Widget buildColorPicker(BuildContext context) {
+  Widget buildEtiquetaColor(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -286,13 +345,13 @@ class _PromocionItemVistaState extends State<PromocionItemVista> {
             ),
             const SizedBox(width: 8),
             Text(
-              'Color',
+              'Etiqueta de color',
               style: GoogleFonts.lato(fontSize: 28),
             ),
           ],
         ),
         TextButton(
-          child: const Text('Select'),
+          child: const Text('Seleccionar'),
           onPressed: () {
             showDialog(
               context: context,
@@ -319,71 +378,5 @@ class _PromocionItemVistaState extends State<PromocionItemVista> {
         ),
       ],
     );
-  }
-
-  Widget buildQuantityField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
-          children: [
-            Text(
-              'Quantity',
-              style: GoogleFonts.lato(fontSize: 28.0),
-            ),
-            const SizedBox(width: 16.0),
-            Text(
-              _currentSliderValue.toInt().toString(),
-              style: GoogleFonts.lato(fontSize: 18.0),
-            ),
-          ],
-        ),
-        Slider(
-          inactiveColor: _currentColor.withOpacity(0.5),
-          activeColor: _currentColor,
-          value: _currentSliderValue.toDouble(),
-          min: 0.0,
-          max: 100.0,
-          divisions: 100,
-          label: _currentSliderValue.toInt().toString(),
-          onChanged: (double value) {
-            setState(() {
-              _currentSliderValue = value.toInt();
-            });
-          },
-        ),
-      ],
-    );
-  }
-
-  @override
-  void initState() {
-    final originalItem = widget.originalItem;
-    if (originalItem != null) {
-      _name = originalItem.name;
-      _nameController.text = originalItem.name;
-      _currentSliderValue = originalItem.quantity;
-      _importance = originalItem.importance;
-      _currentColor = originalItem.color;
-      final date = originalItem.date;
-      _timeOfDay = TimeOfDay(hour: date.hour, minute: date.minute);
-      _dueDate = date;
-    }
-
-    _nameController.addListener(() {
-      setState(() {
-        _name = _nameController.text;
-      });
-    });
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
   }
 }
