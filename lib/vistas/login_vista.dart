@@ -108,28 +108,17 @@ class _LoginVistaState extends State<LoginVista> {
                         ),
                       ],
                     ),
-<<<<<<< HEAD
                     const SizedBox(height: 20),
-=======
-                    const Spacer(),
->>>>>>> c537a58a5b586e563a0dc297480174541dba6ff9
                     Row(
                       children: [
                         const SizedBox(height: 20),
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () {
-<<<<<<< HEAD
                               /* usuarioDao.login(
                                 _nombreUsuarioController.text,
                                 _passwordController.text,
                               ); */
-=======
-                              usuarioDao.login(
-                                _nombreUsuarioController.text,
-                                _passwordController.text,
-                              );
->>>>>>> c537a58a5b586e563a0dc297480174541dba6ff9
                               Provider.of<AppStateManager>(context,
                                       listen: false)
                                   .login('mockUsername', 'mockPassword');
@@ -139,10 +128,7 @@ class _LoginVistaState extends State<LoginVista> {
                         )
                       ],
                     ),
-<<<<<<< HEAD
                     const Spacer(),
-=======
->>>>>>> c537a58a5b586e563a0dc297480174541dba6ff9
                     Row(
                       children: [
                         const SizedBox(height: 20),
@@ -164,7 +150,6 @@ class _LoginVistaState extends State<LoginVista> {
                       ],
                     ),
                   ],
-<<<<<<< HEAD
                 ),
               ),
             ),
@@ -173,75 +158,4 @@ class _LoginVistaState extends State<LoginVista> {
       ),
     );
   }
-=======
-                ),
-              ),
-            ),
-          ],
-        ),
-
-        /* Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(
-                height: 200,
-                child: Image(
-                  image: AssetImage(
-                      'assets/el_pregonero_assets/el_pregonero_logo.png'),
-                ),
-              ),
-              const SizedBox(height: 16),
-              buildTextfield(widget.nombreUsuario ?? '🍔 username'),
-              const SizedBox(height: 16),
-              buildTextfield('🎹 password'),
-              const SizedBox(height: 16),
-              buildButton(context),
-            ],
-          ),
-        ), */
-      ),
-    );
-  }
-
-/*   Widget buildButton(BuildContext context) {
-    return SizedBox(
-      height: 55,
-      child: MaterialButton(
-        color: rwColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-        child: const Text(
-          'Login',
-          style: TextStyle(color: Colors.white),
-        ),
-        onPressed: () async {
-          Provider.of<UsuarioDao>(context, listen: false)
-              .login('mockUsername', 'mockPassword');
-          Provider.of<AppStateManager>(context, listen: false)
-              .login('mockUsername', 'mockPassword');
-        },
-      ),
-    );
-  }
-
-  Widget buildTextfield(String hintText) {
-    return TextField(
-      cursorColor: rwColor,
-      decoration: InputDecoration(
-        border: const OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.green,
-            width: 1.0,
-          ),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.green),
-        ),
-        hintText: hintText,
-        hintStyle: const TextStyle(height: 0.5),
-      ),
-    );
-  } */
->>>>>>> c537a58a5b586e563a0dc297480174541dba6ff9
 }
