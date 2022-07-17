@@ -76,7 +76,7 @@ class AppRouter extends RouterDelegate<AppLink>
       appStateManager.logout();
     }
 
-    if (route.settings.name == ElPregoneroPaginas.groceryItemDetails) {
+    if (route.settings.name == ElPregoneroPaginas.promocionItemDetalles) {
       promocionManager.groceryItemTapped(-1);
     }
 
